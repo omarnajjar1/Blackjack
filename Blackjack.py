@@ -14,7 +14,6 @@ def calculate_score(hand):
     if 11 in hand and sum(hand) > 21:
        hand.remove(11) 
        hand.append(1)
-    return hand
 
 def main_menu():
     
@@ -58,10 +57,10 @@ def run_project():
  
     while True: 
         
-          computer_hand = calculate_score (computer_hand)
-          user_hand = calculate_score (user_hand)
-         
+          calculate_score (computer_hand)
+          calculate_score (user_hand)
 
+      
           # The user points went over 21
           if sum (user_hand) > 21:
                final_hand()
