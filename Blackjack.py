@@ -1,4 +1,4 @@
-﻿import random 
+import random 
 import time
 import os
 
@@ -14,6 +14,7 @@ def calculate_score(hand):
     if 11 in hand and sum(hand) > 21:
        hand.remove(11) 
        hand.append(1)
+    return hand
 
 def main_menu():
     
@@ -57,8 +58,8 @@ def run_project():
  
     while True: 
         
-          calculate_score (computer_hand)
-          calculate_score (user_hand)
+          computer_hand = calculate_score (computer_hand)
+          user_hand = calculate_score (user_hand)
          
 
           # The user points went over 21
@@ -85,23 +86,22 @@ def run_project():
                         else:
                            break
 
-                               
                   # The computer points went over 21
                   if sum (computer_hand) > 21:
                      final_hand()
                      print ("Computer went over 21, you win 🌟 \n \n") 
                      break
 
-                  # The computer arrived to 21 points
+                  # The computer arrived to 21 points (Blackjack)
                   elif sum (user_hand) == 21 and sum (computer_hand) < 21:
                        final_hand()
-                       print ("You Win \n \n")
+                       print ("Blackjack! You Win \n \n")
                        break 
 
-                  # The computer arrived to 21 points
+                  # The computer arrived to 21 points (Blackjack)
                   elif sum (computer_hand) == 21 and sum (user_hand) < 21:
                        final_hand()
-                       print ("Computer Win \n \n")
+                       print ("Blackjack! Computer Win \n \n")
                        break
 
                   # The computer and the user arrived to 21 points together
@@ -126,7 +126,8 @@ def run_project():
                   else:
                        final_hand()
                        print ("Draw \n \n")
-                        
+                       break
+
 
 while True:
       main_menu()
