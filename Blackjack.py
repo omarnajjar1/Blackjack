@@ -2,7 +2,7 @@ import random
 import time
 import os
 
-PLAYING_CARDS = [2,3,4,5,6,7,8,9,10,11]
+cards = [2,3,4,5,6,7,8,9,10,11]
                  
 def clear_terminal():
     os.system("cls")
