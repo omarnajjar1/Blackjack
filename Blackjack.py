@@ -63,15 +63,17 @@ def compare(user_score: int, computer_score: int, user_cards: list, computer_car
 def game():
     user_cards = [deal_card() for _ in range(2)]
     computer_cards = [deal_card() for _ in range(2)]
+    user_score = calculate_score (user_cards)
+    computer_score = calculate_score (computer_cards)
 
     while True:
         # User's turn
-        user_score = calculate_score(user_cards)
+        user_score = calculate_score (user_cards)
         slow_painting (f"\n\nYour cards are {user_cards}, with currently score {sum(user_cards)} \n")
         time.sleep(0.5)
         slow_painting (f"Computer's first card is {computer_cards[0]} \n")
         time.sleep(2)
-        if user_score == 21 or computer_score == 21 or user_score > 21 or computer_score > 21:
+        if user_score == 21 or computer_score == 21 or user_score > 21:
            break
         else:
             user_needs_another_one = input ("Get another card? y/n ").lower()
@@ -85,8 +87,8 @@ def game():
         if user_score == 21 and len (user_cards) == 2:
            break
         else:
-           computer_cards.append(deal_card())
-           computer_score = calculate_score(computer_cards)
+           computer_cards.append (deal_card())
+           computer_score = calculate_score (computer_cards)
     
     print (f"Your final hand: {user_cards} with score {user_score}")
     time.sleep(1)
