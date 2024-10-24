@@ -1,30 +1,110 @@
-import random 
+from colorama import Fore, Back
+import random
 import time
+import sys
 import os
 
-PLAYING_CARDS = [2,3,4,5,6,7,8,9,10,11]
-                 
+
+CARDS = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
+
 def clear_terminal():
     os.system("cls")
 
-def random_card():
-    return random.choice(PLAYING_CARDS)
 
-def calculate_score(hand):
-    if 11 in hand and sum(hand) > 21:
-       hand.remove(11) 
-       hand.append(1)
+def slow_painting(text: str):
+    for char in text:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(0.04)
 
-def main_menu():
+
+def deal_card():
+    """ترد كارت عشوائي"""
+    card = random.choice(CARDS)
+    return card
+
+
+def calculate_score(cards: list):
+    "تأخذ قائمة من الكروت وتعيد لنا مجموعهم"""
+    # هل الكروت فوق 21 وهناك رقم 11
+    if 11 in cards and sum(cards) > 21:
+        cards.remove(11)
+        cards.append(1)
+
+    return sum(cards)
+
+
+def compare(user_score: int, computer_score: int, user_cards: list, computer_cards: list):
+    results = {"draw": "Draw 😊 \n\n",
+               "user_over": "You went over 21, Sorry \n\n",
+               "computer_over": "Computer went over 21, you win \n\n",
+               "user_21": "You won with a blackjack",
+               "computer_21": "Sorry, computer had a blackjack \n\n",
+               "user_win": "You win \n\n",
+               "user_lose": "You lose \n\n",
+               }
+
+    if user_score == computer_score:
+        return results["draw"]
+    elif user_score == 21 and len (user_cards) == 2:
+        return results["user_21"]
+    elif computer_score == 21 and len (computer_cards) == 2:
+        return results["computer_21"]
+    elif user_score > 21:
+        return results["user_over"]
+    elif computer_score > 21:
+        return results["computer_over"]
+    elif user_score > computer_score:
+        return results["user_win"]
+    else:
+        return results["user_lose"]
+
+
+def game():
+    user_cards = [deal_card() for _ in range(2)]
+    computer_cards = [deal_card() for _ in range(2)]
+
+    while True:
+        # User's turn
+        user_score = calculate_score(user_cards)
+        slow_painting (f"\n\nYour cards are {user_cards}, with currently score {sum(user_cards)} \n")
+        time.sleep(0.5)
+        slow_painting (f"Computer's first card is {computer_cards[0]} \n")
+        time.sleep(2)
+        if user_score == 21 or computer_score == 21 or user_score > 21 or computer_score > 21:
+           break
+        else:
+            user_needs_another_one = input ("Get another card? y/n ").lower()
+            if user_needs_another_one == "y":
+                user_cards.append(deal_card())
+            else:
+                break
+
+    while computer_score < 17 and user_score < 21:
+        # Computer's turn
+        if user_score == 21 and len (user_cards) == 2:
+           break
+        else:
+           computer_cards.append(deal_card())
+           computer_score = calculate_score(computer_cards)
     
-    print ("Choose a game to start......")
-    print ("\n1- Froggy \n2- Twenty one \n3- Snake \n------")
+    print (f"Your final hand: {user_cards} with score {user_score}")
+    time.sleep(1)
+    slow_painting(f"Computer's final hand: {computer_cards} with score {computer_score} \n")
+    time.sleep(0.4)
+    slow_painting (compare(user_score, computer_score, user_cards, computer_cards))
+
+
+
+while True:
+    
+    print(Back.BLACK) ## لتلوين الخلفية
+    clear_terminal()  ##     بالكامل
+    print(f"{Fore.WHITE} Choose a game to start ....\n\n1- Froggy \n2- Twenty one\n3- Snake \n------")
     quit() if input().lower() not in ("twenty one", "2") else clear_terminal()
-
-    print ("Starting game .......")
-    time.sleep(3)
+    print("Starting game .......")
+    time.sleep(2)
     clear_terminal()
-    
     print (r"""
        /\
      .'  `.
@@ -44,89 +124,5 @@ def main_menu():
                                                   ______   
                                                  |______|
 """)
-
-    run_project()
-
-def run_project():
-    def final_hand():
-        print (f"\n \nYour final hand: {user_hand} with score {sum(user_hand)}")
-        print (f"Computer final hand: {computer_hand} with score {sum(computer_hand)}")
-
-    computer_hand = [random_card(), random_card()]
-    user_hand = [random_card(), random_card()]
- 
-    while True: 
-        
-          calculate_score (computer_hand)
-          calculate_score (user_hand)
-
-      
-          # The user points went over 21
-          if sum (user_hand) > 21:
-               final_hand()
-               print ("You went over 21, computer win \n \n")
-               break
-
-          else:
-               
-               print (f"\n \nYour cards are {user_hand}, current score is {sum(user_hand)}")
-               print (f"Computer's first card is {computer_hand [0]}")
-               if input ("Get another card? y/n ").lower() == "y":
-                  user_hand.append (random_card())
-                  continue
-
-               else:
-                  while sum (computer_hand) <= 17:
-                        if random.choice ([True , True, False]):
-
-                           computer_hand.append (random_card())
-                           calculate_score (computer_hand)
-
-                        else:
-                           break
-
-                  # The computer points went over 21
-                  if sum (computer_hand) > 21:
-                     final_hand()
-                     print ("Computer went over 21, you win 🌟 \n \n") 
-                     break
-
-                  # The computer arrived to 21 points (Blackjack)
-                  elif sum (user_hand) == 21 and sum (computer_hand) < 21:
-                       final_hand()
-                       print ("Blackjack! You Win \n \n")
-                       break 
-
-                  # The computer arrived to 21 points (Blackjack)
-                  elif sum (computer_hand) == 21 and sum (user_hand) < 21:
-                       final_hand()
-                       print ("Blackjack! Computer Win \n \n")
-                       break
-
-                  # The computer and the user arrived to 21 points together
-                  elif sum (computer_hand) == 21 and sum (user_hand) == 21:
-                       final_hand()
-                       print ("Draw \n \n")
-                       break 
-                        
-                  # The computer has more points than the user at the end of the game
-                  elif sum (computer_hand) < 21 and sum (user_hand) < 21 and sum (computer_hand) > sum (user_hand):
-                       final_hand()
-                       print ("Computer Win \n \n")
-                       break
-
-                  # The user has more points than the computer at the end of the game
-                  elif sum (computer_hand) < 21 and sum (user_hand) < 21 and sum (user_hand) > sum (computer_hand):                  
-                       final_hand()
-                       print ("You Win \n \n")
-                       break 
-
-                  # The user and the computer have the same numbers of points at the end of the game
-                  else:
-                       final_hand()
-                       print ("Draw \n \n")
-                       break
-
-
-while True:
-      main_menu()
+    game()
+    time.sleep(3)
